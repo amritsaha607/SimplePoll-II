@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -24,33 +24,47 @@ class HomeView(View):
 
 class PollView(View):
 
+    def get_poll_results(self, poll):
+        poll_results = []
+        for choice in poll.choices.all():
+            voteCount = Vote.objects.filter(poll=poll, choice=choice).count()
+            poll_results.append([choice.name, voteCount])
+        return poll_results
+
     def get(self, request, poll_id):
         poll = Poll.objects.get(id=poll_id)
+        poll_results = self.get_poll_results(poll)
         return render(
             request,
             template_name="PollApp/poll.html",
             context={
                 "user": get_user(request),
                 "poll": poll,
+                "poll_results": poll_results,
             }
         )
 
     def post(self, request, poll_id):
+
+        user = get_user(request)
+        if user is None:
+            return HttpResponse("Please login to continue")
+
         requestData = request.POST
 
         choice_id = requestData.get('choice_id')
 
         poll = Poll.objects.get(id=poll_id)
         choice = Choice.objects.get(id=choice_id)
-        Vote.objects.create(
+        Vote.objects.update_or_create(
             poll=poll,
-            choice=choice,
+            user=user,
+            defaults={
+                "choice": choice,
+            }
         )
 
-        poll_results = []
-        for choice in poll.choices.all():
-            voteCount = Vote.objects.filter(poll=poll, choice=choice).count()
-            poll_results.append([choice.name, voteCount])
+        poll_results = self.get_poll_results(poll)
 
         return render(
             request,
@@ -98,7 +112,7 @@ class AuthView(View):
 
         elif mode == 'login':
             response = self.login(request, username, password)
-    
+
         elif mode == 'logout':
             response = self.logout(request)
 
