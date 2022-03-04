@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views import View
 
 from PollApp.models import Choice, Poll, User, Vote
+from PollApp.utils import get_user
 
 # Create your views here.
 
@@ -15,6 +16,7 @@ class HomeView(View):
             request,
             template_name="PollApp/home.html",
             context={
+                "user": get_user(request),
                 "polls": polls,
             }
         )
@@ -28,6 +30,7 @@ class PollView(View):
             request,
             template_name="PollApp/poll.html",
             context={
+                "user": get_user(request),
                 "poll": poll,
             }
         )
@@ -97,7 +100,7 @@ class AuthView(View):
             response = self.login(request, username, password)
     
         elif mode == 'logout':
-            self.logout(request)
+            response = self.logout(request)
 
         else:
             raise Exception(f"Unknown mode found in authorization : {mode}")
