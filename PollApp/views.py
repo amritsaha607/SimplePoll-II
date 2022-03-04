@@ -1,7 +1,8 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from PollApp.models import Choice, Poll, Vote
+from PollApp.models import Choice, Poll, User, Vote
 
 # Create your views here.
 
@@ -57,3 +58,48 @@ class PollView(View):
                 "poll_results": poll_results,
             }
         )
+
+
+class AuthView(View):
+
+    def register(self, request, username, password):
+        if User.objects.filter(username=username).exists():
+            return "Username already exists"
+
+        user = User.objects.create(username=username, password=password)
+        request.session['user_id'] = user.id
+
+        return "ok"
+
+    def login(self, request, username, password):
+        if not User.objects.filter(username=username, password=password).exists():
+            return "Invalid credentials"
+
+        request.session['user_id'] = User.objects.get(username=username).id
+
+        return "ok"
+
+    def logout(self, request):
+        del request.session['user_id']
+        return "ok"
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+
+        mode = data.get('mode')
+        username = data.get('username')
+        password = hash(data.get('password'))
+
+        if mode == 'register':
+            response = self.register(request, username, password)
+
+        elif mode == 'login':
+            response = self.login(request, username, password)
+    
+        elif mode == 'logout':
+            self.logout(request)
+
+        else:
+            raise Exception(f"Unknown mode found in authorization : {mode}")
+
+        return JsonResponse({"response": response})

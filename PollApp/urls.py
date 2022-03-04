@@ -7,4 +7,5 @@ app_name = "PollApp"
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
     path("poll/<int:poll_id>/", views.PollView.as_view(), name="poll"),
+    path("auth", views.AuthView.as_view(), name="auth"),
 ]
