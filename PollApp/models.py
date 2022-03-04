@@ -40,7 +40,7 @@ class Vote(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        unique_together = ('poll', 'choice', 'user',)
+        unique_together = ('poll', 'user',)
 
     def __str__(self):
         return f"{self.user.username} : {self.poll.name} - {self.choice.name}"
