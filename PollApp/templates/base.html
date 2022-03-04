@@ -18,6 +18,16 @@
         aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item" data-bs-toggle="modal" data-bs-target="#signUpModal">
+            <a class="nav-link">Register</a>
+          </li>
+          <li class="nav-item" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <a class="nav-link">Login</a>
+          </li>
+      </div>
     </div>
   </nav>
 
@@ -26,6 +36,58 @@
   <div class="container">
     {% block body %}
     {% endblock %}
+  </div>
+
+  <div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signUpModalLabel">Sign Up</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="id_username" class="col-form-label">Username</label>
+              <input type="text" class="form-control" id="id_username" name="username">
+            </div>
+            <div class="mb-3">
+              <label for="id_password" class="col-form-label">Password</label>
+              <input type="text" class="form-control" id="id_password" name="password">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btn_register">Register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="id_username" class="col-form-label">Username</label>
+              <input type="text" class="form-control" id="id_username" name="username">
+            </div>
+            <div class="mb-3">
+              <label for="id_password" class="col-form-label">Password</label>
+              <input type="text" class="form-control" id="id_password" name="password">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btn_login">Login</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 </body>
