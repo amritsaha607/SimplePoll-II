@@ -4,6 +4,15 @@ from django.utils import timezone
 # Create your models here.
 
 
+class User(models.Model):
+    username = models.CharField(max_length=20, unique=True)
+    password = models.CharField(max_length=255)
+    registered_on = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.username
+
+
 class Choice(models.Model):
     name = models.CharField(max_length=20)
 
@@ -26,7 +35,12 @@ class Vote(models.Model):
         Poll, on_delete=models.SET_NULL, related_name="votes", null=True, blank=True)
     choice = models.ForeignKey(
         Choice, on_delete=models.SET_NULL, related_name="votes", null=True, blank=True)
-    timestamp = models.DateTimeField(default=timezone.now())
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, related_name="votes", null=True, blank=True)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('poll', 'choice', 'user',)
 
     def __str__(self):
-        return f"{self.poll.name} - {self.choice.name}"
+        return f"{self.user.username} : {self.poll.name} - {self.choice.name}"
